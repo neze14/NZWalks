@@ -3,7 +3,6 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace NZWalks.API.Controllers
 {
-
     // https://localhost:44372/api/students
     [Route("api/[controller]")]
     [ApiController]
