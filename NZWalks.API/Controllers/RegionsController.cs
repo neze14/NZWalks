@@ -17,11 +17,7 @@ namespace NZWalks.API.Controllers
         private readonly IRegionRepository regionRepository;
         private readonly IMapper mapper;
 
-        public RegionsController(
-            NZWalksDbContext dbContext, 
-            IRegionRepository regionRepository,
-            IMapper mapper
-            )
+        public RegionsController(NZWalksDbContext dbContext, IRegionRepository regionRepository, IMapper mapper )
         {
             this.dbContext = dbContext;
             this.regionRepository = regionRepository;
@@ -97,30 +93,18 @@ namespace NZWalks.API.Controllers
         [Route("/update-region/{id:Guid}")]
         public async Task<IActionResult> UpdateRegion([FromRoute] Guid id, [FromBody] UpdateRegionDto updateRegionDto)
         {
-            //var existingRegion = await dbContext.Regions.FirstOrDefaultAsync(
-            //    r => r.Id != id &&
-            //    r.Code == updateRegionDto.Code ||
-            //    r.Name == updateRegionDto.Name);
-            //if (existingRegion != null)
-            //{
-            //    return BadRequest("Duplication region code or name already exists.");
-            //}
-
             // map dtp tp domain model
             var regionDomainModel = mapper.Map<Region>(updateRegionDto);
 
             // Check if region exists
-           regionDomainModel = await regionRepository.UpdateAsync(id, regionDomainModel);
+           var response = await regionRepository.UpdateAsync(id, regionDomainModel);
 
-            if (regionDomainModel == null)
+            if (!string.IsNullOrWhiteSpace(response.message))
             {
-                return NotFound(new { message = "Region not found." });
+                return response.message.ToLower().Contains("not found")
+                    ? NotFound(new { message = response.message })
+                    : BadRequest(new { message = response.message });
             }
-
-            //if (errorMessage != null)
-            //{
-            //    return BadRequest(new { message = errorMessage });
-            //}
 
             await dbContext.SaveChangesAsync();
 
