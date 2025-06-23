@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using NZWalks.API.CustomActionFilter;
 using NZWalks.API.Data;
 using NZWalks.API.Models.Domain;
 using NZWalks.API.Models.DTO;
@@ -61,6 +62,7 @@ namespace NZWalks.API.Controllers
         // POST create new region
         // POST: https://localhost:44372/api/regions
         [HttpPost("/create-region")]
+        [ValidateModel]
         public async Task<IActionResult> CreateRegion([FromBody] AddRegionDto addRegionRequestDto)
         {
             // Check if region with the same code already exists
@@ -91,13 +93,14 @@ namespace NZWalks.API.Controllers
         // PUT: https://localhost:44372/api/regions/{id}
         [HttpPut]
         [Route("/update-region/{id:Guid}")]
+        [ValidateModel]
         public async Task<IActionResult> UpdateRegion([FromRoute] Guid id, [FromBody] UpdateRegionDto updateRegionDto)
         {
             // map dtp tp domain model
             var regionDomainModel = mapper.Map<Region>(updateRegionDto);
 
             // Check if region exists
-           var response = await regionRepository.UpdateAsync(id, regionDomainModel);
+            var response = await regionRepository.UpdateAsync(id, regionDomainModel);
 
             if (!string.IsNullOrWhiteSpace(response.message))
             {
