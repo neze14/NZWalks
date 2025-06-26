@@ -13,11 +13,11 @@ namespace NZWalks.API.Repositories
         {
             this.dbContext = dbContext;
         }
-        
+
         public async Task<List<Region>> GetAllAsync(string? filterOn = null, string? filterQuery = null,
             string? sortBy = null, bool isAscending = true, int pageNumber = 1, int pageSize = 5)
         {
-            var regions = dbContext.Regions.Include("Difficulty").Include("Region").AsQueryable();
+            var regions = dbContext.Regions.AsQueryable();
 
             // Filtering
             if (string.IsNullOrWhiteSpace(filterOn) == false && string.IsNullOrWhiteSpace(filterQuery) == false)
