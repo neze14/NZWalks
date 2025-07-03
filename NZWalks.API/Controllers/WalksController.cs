@@ -12,7 +12,7 @@ namespace NZWalks.API.Controllers
     // https://localhost:44372/api/walks
     [Route("api/v1/[controller]")]
     [ApiController]
-    [Authorize]
+    //[Authorize]
 
     public class WalksController : ControllerBase
     {
@@ -27,7 +27,7 @@ namespace NZWalks.API.Controllers
 
         // GET: get all walks
         [HttpGet("get-all-walks")]
-        [Authorize(Roles = "Reader,Writer")]
+        //[Authorize(Roles = "Reader,Writer")]
         public async Task<IActionResult> GetAll([FromQuery] string? filterOn, [FromQuery] string? filterQuery,
             [FromQuery] string? sortBy, [FromQuery] bool? isAscending, [FromQuery] int pageNumber = 1,[FromQuery] int pageSize = 5)
         {
@@ -41,7 +41,7 @@ namespace NZWalks.API.Controllers
         // GET: get all walks
         [HttpGet]
         [Route("get-walk/{id:Guid}")]
-        [Authorize(Roles = "Writer")]
+        //[Authorize(Roles = "Writer")]
         public async Task<IActionResult> GetById([FromRoute] Guid id)
         {
             var walksDomain = await walkRepository.GetByIdAsync(id);
@@ -55,7 +55,7 @@ namespace NZWalks.API.Controllers
         // POST: create walk
         [HttpPost("create-walk")]
         [ValidateModel]
-        [Authorize(Roles = "Writer")]
+        //[Authorize(Roles = "Writer")]
         public async Task<IActionResult> Create([FromBody] AddWalkDto addWalkDto)
         {
              // Map dto to domain model
@@ -75,7 +75,7 @@ namespace NZWalks.API.Controllers
         [HttpPut]
         [Route("update-walk/{id:Guid}")]
         [ValidateModel]
-        [Authorize(Roles = "Writer")]
+        //[Authorize(Roles = "Writer")]
         public async Task<IActionResult> Update([FromRoute] Guid id, UpdateWalkDto updateWalkDto)
         {
             // Map dto to domain model
@@ -96,7 +96,7 @@ namespace NZWalks.API.Controllers
         // DELETE: delete walk
         [HttpDelete]
         [Route("delete-walk/{id:Guid}")]
-        [Authorize(Roles = "Writer")]
+        //[Authorize(Roles = "Writer")]
         public async Task<IActionResult> Delete([FromRoute] Guid id)
         {
             var walksDomain = await walkRepository.DeleteAsync(id);

@@ -14,7 +14,7 @@ namespace NZWalks.API.Controllers
     // https://localhost:44372/api/regions
     [Route("api/v1/[controller]")]
     [ApiController]
-    [Authorize]
+    //[Authorize]
 
     public class RegionsController : ControllerBase
     {
@@ -37,7 +37,7 @@ namespace NZWalks.API.Controllers
         // GET all regions
         // GET: https://localhost:44372/api/regions
         [HttpGet("get-all-regions")]
-        [Authorize(Roles = "Reader,Writer")]
+        //[Authorize(Roles = "Reader,Writer")]
         public async Task<IActionResult> GetAll([FromQuery] string? filterOn, [FromQuery] string? filterQuery,
             [FromQuery] string? sortBy, [FromQuery] bool? isAscending, [FromQuery] int pageNumber = 1, [FromQuery] int pageSize = 5)
         {
@@ -56,7 +56,7 @@ namespace NZWalks.API.Controllers
         // GET: https://localhost:44372/api/regions/{id}
         [HttpGet]
         [Route("get-region/{id:Guid}")]
-        [Authorize(Roles = "Writer")]
+        //[Authorize(Roles = "Writer")]
         public async Task<IActionResult> GetById([FromRoute] Guid id)
         {
             // Get region domain model from db
@@ -77,7 +77,7 @@ namespace NZWalks.API.Controllers
         // POST: https://localhost:44372/api/regions
         [HttpPost("create-region")]
         [ValidateModel]
-        [Authorize(Roles = "Writer")]
+        //[Authorize(Roles = "Writer")]
         public async Task<IActionResult> CreateRegion([FromBody] AddRegionDto addRegionRequestDto)
         {
             // Check if region with the same code already exists
@@ -109,7 +109,7 @@ namespace NZWalks.API.Controllers
         [HttpPut]
         [Route("update-region/{id:Guid}")]
         [ValidateModel]
-        [Authorize(Roles = "Writer")]
+        //[Authorize(Roles = "Writer")]
         public async Task<IActionResult> UpdateRegion([FromRoute] Guid id, [FromBody] UpdateRegionDto updateRegionDto)
         {
             // map dtp tp domain model
@@ -141,7 +141,7 @@ namespace NZWalks.API.Controllers
         // DELETE: https://localhost:44372/api/regions/{id}
         [HttpDelete]
         [Route("delete-region/{id:Guid}")]
-        [Authorize(Roles = "Writer")]
+        //[Authorize(Roles = "Writer")]
         public async Task<IActionResult> DeleteRegion([FromRoute] Guid id)
         {
             // Check if region exists
