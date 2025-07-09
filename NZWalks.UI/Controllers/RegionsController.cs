@@ -1,5 +1,9 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using NZWalks.UI.Models;
 using NZWalks.UI.Models.DTO;
+using System.Net.Http;
+using System.Text;
+using System.Text.Json;
 using System.Threading.Tasks;
 
 namespace NZWalks.UI.Controllers
@@ -13,6 +17,7 @@ namespace NZWalks.UI.Controllers
             this.httpClientFactory = httpClientFactory;
         }
 
+        [HttpGet]
         public async Task<IActionResult> Index()
         {
             List<RegionDto> response = new List<RegionDto>();
@@ -35,6 +40,82 @@ namespace NZWalks.UI.Controllers
             }
 
             return View(response);
+        }
+
+        [HttpGet]
+        public IActionResult Add()
+        {
+            return View();
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> Add(AddRegionViewModel addRegionViewModel)
+        {
+            var client = httpClientFactory.CreateClient();
+
+            var httpRequestMessage = new HttpRequestMessage()
+            {
+                Method = HttpMethod.Post,
+                RequestUri = new Uri("https://localhost:44372/api/v1/Regions/create-region"),
+                Content = new StringContent(JsonSerializer.Serialize(addRegionViewModel), Encoding.UTF8, "application/json")
+            };
+
+            var httpResponseMessage = await client.SendAsync(httpRequestMessage);
+
+            httpResponseMessage.EnsureSuccessStatusCode();
+
+            var response = await httpResponseMessage.Content.ReadFromJsonAsync<RegionDto>();
+
+            if (response is not null)
+            {
+                // Redirect to Index action after successful addition
+                return RedirectToAction("Index", "Regions");
+            }
+
+            return View();
+        }
+    
+    
+        [HttpGet]
+        public async Task<IActionResult> Edit(Guid id)
+        {
+            var client = httpClientFactory.CreateClient(); 
+
+            var response = await client.GetFromJsonAsync<RegionDto>($"https://localhost:44372/api/v1/Regions/get-region/{id.ToString()}");
+            
+            if (response is not null)
+            {
+                return View(response);
+            }
+
+            return View(null);
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> Edit(RegionDto request)
+        {
+            var client = httpClientFactory.CreateClient();
+
+            var httpRequestMessage = new HttpRequestMessage()
+            {
+                Method = HttpMethod.Put,
+                RequestUri = new Uri($"https://localhost:44372/api/v1/Regions/update-region/{request.Id}"),
+                Content = new StringContent(JsonSerializer.Serialize(request), Encoding.UTF8, "application/json")
+            };
+
+            var httpResponseMessage = await client.SendAsync(httpRequestMessage);
+
+            httpResponseMessage.EnsureSuccessStatusCode();
+
+            var response = await httpResponseMessage.Content.ReadFromJsonAsync<RegionDto>();
+
+            if (response is not null)
+            {
+                // Redirect to Edit action after successful addition
+                return RedirectToAction("Edit", "Regions");
+            }
+
+            return View();
         }
     }
 }
