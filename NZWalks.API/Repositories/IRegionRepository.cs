@@ -1,4 +1,5 @@
 ﻿using NZWalks.API.Models.Domain;
+using NZWalks.API.Models.DTO;
 using System.Runtime.InteropServices;
 
 namespace NZWalks.API.Repositories
@@ -15,7 +16,7 @@ namespace NZWalks.API.Repositories
 
         Task<Region> CreateAsync(Region region);
 
-        Task<(Region? region, string message)> UpdateAsync(Guid id, Region region);
+        Task<(Region? region, string message)> UpdateAsync(Guid id, UpdateRegionDto region);
 
         Task<Region?> DeleteAsync(Guid id);
     }

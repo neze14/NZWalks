@@ -39,7 +39,7 @@ namespace NZWalks.API.Controllers
         [HttpGet("get-all-regions")]
         //[Authorize(Roles = "Reader,Writer")]
         public async Task<IActionResult> GetAll([FromQuery] string? filterOn, [FromQuery] string? filterQuery,
-            [FromQuery] string? sortBy, [FromQuery] bool? isAscending, [FromQuery] int pageNumber = 1, [FromQuery] int pageSize = 5)
+            [FromQuery] string? sortBy, [FromQuery] bool? isAscending, [FromQuery] int pageNumber = 1, [FromQuery] int pageSize = 10)
         {
             // Get Data from db - domain models
             var regionsDomain = await regionRepository.GetAllAsync(filterOn, filterQuery, sortBy, isAscending ?? true, pageNumber, pageSize);
@@ -112,11 +112,8 @@ namespace NZWalks.API.Controllers
         //[Authorize(Roles = "Writer")]
         public async Task<IActionResult> UpdateRegion([FromRoute] Guid id, [FromBody] UpdateRegionDto updateRegionDto)
         {
-            // map dtp tp domain model
-            var regionDomainModel = mapper.Map<Region>(updateRegionDto);
-
             // Check if region exists
-            var response = await regionRepository.UpdateAsync(id, regionDomainModel);
+            var response = await regionRepository.UpdateAsync(id, updateRegionDto);
 
             if (!string.IsNullOrWhiteSpace(response.message))
             {
@@ -126,9 +123,9 @@ namespace NZWalks.API.Controllers
             }
 
             await dbContext.SaveChangesAsync();
-
+            
             // Map domain model to dto
-            var regionDto = mapper.Map<RegionDto>(regionDomainModel);
+            var regionDto = mapper.Map<RegionDto>(response.region);
 
             return Ok(new
             {

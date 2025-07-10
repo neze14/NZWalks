@@ -56,15 +56,15 @@ namespace NZWalks.API.Repositories
             return region;
         }
 
-        public async Task<(Region? region, string message)> UpdateAsync(Guid id, Region region)
+        public async Task<(Region? region, string message)> UpdateAsync(Guid id, UpdateRegionDto region)
         {
             var existingRegion = await dbContext.Regions.FirstOrDefaultAsync(r => r.Id == id);
             if (existingRegion == null) return (null, "Region not found");
 
             var duplicateRegion = await dbContext.Regions.FirstOrDefaultAsync(r =>
                 r.Id != id &&
-                r.Code == region.Code ||
-                r.Name == region.Name
+                (r.Code == region.Code ||
+                r.Name == region.Name)
             );
             if (duplicateRegion != null) return (null, "Duplication region code or name already exists.");
 
